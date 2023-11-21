@@ -1,0 +1,38 @@
+version: '3.8'
+
+services:
+  # Laravel Application
+  app:
+    build:
+      context: ./laravel
+      dockerfile: Dockerfile
+    container_name: opnfrm-app
+    volumes:
+      - ./laravel:/var/www/html
+    ports:
+      - "8080:80"
+    environment:
+      - APACHE_DOCUMENT_ROOT=/var/www/html/public
+    depends_on:
+      - mysql
+    networks:
+      - opnfrm-net
+
+  # MySQL Database
+  mysql:
+    image: mysql:8
+    container_name: opnfrm-mysql
+    ports:
+      - "3306:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: app
+      MYSQL_USER: app
+      MYSQL_PASSWORD: app
+    volumes:
+      - ./mysql_data:/var/lib/mysql
+    networks:
+      - opnfrm-net
+
+networks:
+  opnfrm-net:
